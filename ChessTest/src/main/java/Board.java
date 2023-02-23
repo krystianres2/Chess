@@ -11,10 +11,16 @@ public class Board extends JFrame  {
     private ImageIcon selectedIcon = null;
     Images images=new Images();
     Color def;
+    int pomX;
+    int pomY;
+    int pom2X;
+    int pom2Y;
 
     public Board() {
 
         setLayout(new GridLayout(ROWS, COLUMNS));
+        Figura f=new Figura();
+        f.setStartObjectsPositions();
         for (int i = 0; i < ROWS; i++) {
             for (int j = 0; j < COLUMNS; j++) {
                 squares[i][j] = new JButton();
@@ -32,14 +38,26 @@ public class Board extends JFrame  {
                             selectedButton.setBackground(Color.YELLOW);
                             }
                         } else {
-                            // Second button clicked
+                            // Second button clicked//if all good
                             if (selectedButton!=clickedButton) {
-                                selectedButton.setIcon(null);
-                                clickedButton.setIcon(selectedIcon);
-                                selectedButton.setBackground((getRow(selectedButton) + getColumn(selectedButton)) % 2 == 0 ? new Color(227, 193, 111) : new Color(184, 139, 74));
+                                pomX=getRow(selectedButton);
+                                pomY=getColumn(selectedButton);
+                                pom2X=getRow(clickedButton);
+                                pom2Y=getColumn(clickedButton);
+                                if (!f.getColoursTab(pomX,pomY).equals(f.getColoursTab(pom2X,pom2Y))) {//tutaj dodawać walidacje ruchu oraz bicia
+                                    f.setTab(pom2X, pom2Y, f.getFigura(pomX, pomY));
+                                    f.setTabNull(pomX, pomY);
+                                    f.setStringTab(pom2X, pom2Y, f.getColoursTab(pomX, pomY));
+                                    f.setColoursTabNull(pomX, pomY);
+                                    selectedButton.setIcon(null);
+                                    clickedButton.setIcon(selectedIcon);
+                                    selectedButton.setBackground((getRow(selectedButton) + getColumn(selectedButton)) % 2 == 0 ? new Color(227, 193, 111) : new Color(184, 139, 74));
+                                }else selectedButton.setBackground((getRow(selectedButton) + getColumn(selectedButton)) % 2 == 0 ? new Color(227, 193, 111) : new Color(184, 139, 74));
                             }else {selectedButton.setBackground(def);}
                             selectedButton = null;
                         }
+                        //f.print2DObjectsArray();
+                        f.print2DStringArray();
                     }
                 });
                 add(squares[i][j]);
